@@ -3,8 +3,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: sock-shop
-  source: namespaces/sock-shop/00-sock-shop-ns.yaml
-#metadata.name: sock-shop
-#group:
-#version: v1
-#kind: Namespace
+source: namespaces/sock-shop/00-sock-shop-ns.yaml
+metadata.name: sock-shop
+group:
+version: v1
+kind: Namespace
