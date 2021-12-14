@@ -3,10 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue
-  namespace: sock-shop
+  #namespace: sock-shop
   labels:
     name: catalogue
-  namespace: sock-shop
+  #namespace: sock-shop
 spec:
   replicas: 1
   selector:
