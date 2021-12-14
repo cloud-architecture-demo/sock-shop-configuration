@@ -4,8 +4,7 @@ kind: Namespace
 metadata:
   name: sock-shop
 source: namespaces/sock-shop/00-sock-shop-ns.yaml
-namespace: sock-shop
-group: rbac.authorization.k8s.io
 metadata.name: sock-shop
+group: rbac.authorization.k8s.io
 version: v1
 kind: Namespace
