@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jenkins-operator
+source: namespaces/jenkins-operator/jenkins-operator-ns.yaml
+metadata.name: jenkins-operator
+group: rbac.authorization.k8s.io
+version: v1
+kind: Namespace

@@ -3667,7 +3667,8 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: default
+  #namespace: default
+  namespace: jenkins-operator
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
