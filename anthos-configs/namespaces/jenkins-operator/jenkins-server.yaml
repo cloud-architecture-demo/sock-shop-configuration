@@ -70,7 +70,7 @@ spec:
             cpu: "1"
             memory: 500Mi
         securityContext:
-          runAsUser: 1000
+        - runAsUser: 1000
           fsGroup: 1000
     #securityContext:
     #runAsUser: 1000
