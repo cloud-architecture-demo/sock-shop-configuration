@@ -71,7 +71,7 @@ spec:
             memory: 500Mi
         securityContext:
         runAsUser: 1000
-        fsGroup:
+        fsGroup: 1000
     securityContext:
       runAsUser: 1000
       fsGroup: 1000
