@@ -3444,5 +3444,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
+  namespace: jenkins-operator
   #namespace: default
-  #namespace: jenkins-operator
