@@ -72,9 +72,9 @@ spec:
         securityContext:
         runAsUser: 1000
         fsGroup: 1000
-    securityContext:
-      runAsUser: 1000
-      fsGroup: 1000
+    #securityContext:
+    #runAsUser: 1000
+    #fsGroup: 1000
   seedJobs:
   - id: hello-world-demo
     credentialType: usernamePassword
