@@ -3340,96 +3340,96 @@ spec:
             - jenkinsAPISettings
             - master
             type: object
-          status:
-            description: Status defines the observed state of Jenkins
-            properties:
-              appliedGroovyScripts:
-                description: AppliedGroovyScripts is a list with all applied groovy
-                  scripts in Jenkins by the operator
-                items:
-                  description: AppliedGroovyScript is the applied groovy script in
-                    Jenkins by the operator.
-                  properties:
-                    configurationType:
-                      description: ConfigurationType is the name of the configuration
-                        type(base-groovy, user-groovy, user-casc)
-                      type: string
-                    hash:
-                      description: Hash is the hash of the groovy script and secrets
-                        which it uses
-                      type: string
-                    name:
-                      description: Name is the name of the groovy script
-                      type: string
-                    source:
-                      description: Source is the name of source where is located groovy
-                        script
-                      type: string
-                  required:
-                  - configurationType
-                  - hash
-                  - name
-                  - source
-                  type: object
-                type: array
-              backupDoneBeforePodDeletion:
-                description: BackupDoneBeforePodDeletion tells if backup before pod
-                  deletion has been made
-                type: boolean
-              baseConfigurationCompletedTime:
-                description: BaseConfigurationCompletedTime is a time when Jenkins
-                  base configuration phase has been completed
-                format: date-time
-                type: string
-              createdSeedJobs:
-                description: CreatedSeedJobs contains list of seed job id already
-                  created in Jenkins
-                items:
-                  type: string
-                type: array
-              lastBackup:
-                description: LastBackup is the latest backup number
-                format: int64
-                type: integer
-              operatorVersion:
-                description: OperatorVersion is the operator version which manages
-                  this CR
-                type: string
-              pendingBackup:
-                description: PendingBackup is the pending backup number
-                format: int64
-                type: integer
-              provisionStartTime:
-                description: ProvisionStartTime is a time when Jenkins master pod
-                  has been created
-                format: date-time
-                type: string
-              restoredBackup:
-                description: RestoredBackup is the restored backup number after Jenkins
-                  master pod restart
-                format: int64
-                type: integer
-              userAndPasswordHash:
-                description: UserAndPasswordHash is a SHA256 hash made from user and
-                  password
-                type: string
-              userConfigurationCompletedTime:
-                description: UserConfigurationCompletedTime is a time when Jenkins
-                  user configuration phase has been completed
-                format: date-time
-                type: string
-            type: object
+#          status:
+#            description: Status defines the observed state of Jenkins
+#            properties:
+#              appliedGroovyScripts:
+#                description: AppliedGroovyScripts is a list with all applied groovy
+#                  scripts in Jenkins by the operator
+#                items:
+#                  description: AppliedGroovyScript is the applied groovy script in
+#                    Jenkins by the operator.
+#                  properties:
+#                    configurationType:
+#                      description: ConfigurationType is the name of the configuration
+#                        type(base-groovy, user-groovy, user-casc)
+#                      type: string
+#                    hash:
+#                      description: Hash is the hash of the groovy script and secrets
+#                        which it uses
+#                      type: string
+#                    name:
+#                      description: Name is the name of the groovy script
+#                      type: string
+#                    source:
+#                      description: Source is the name of source where is located groovy
+#                        script
+#                      type: string
+#                  required:
+#                  - configurationType
+#                  - hash
+#                  - name
+#                  - source
+#                  type: object
+#                type: array
+#              backupDoneBeforePodDeletion:
+#                description: BackupDoneBeforePodDeletion tells if backup before pod
+#                  deletion has been made
+#                type: boolean
+#              baseConfigurationCompletedTime:
+#                description: BaseConfigurationCompletedTime is a time when Jenkins
+#                  base configuration phase has been completed
+#                format: date-time
+#                type: string
+#              createdSeedJobs:
+#                description: CreatedSeedJobs contains list of seed job id already
+#                  created in Jenkins
+#                items:
+#                  type: string
+#                type: array
+#              lastBackup:
+#                description: LastBackup is the latest backup number
+#                format: int64
+#                type: integer
+#              operatorVersion:
+#                description: OperatorVersion is the operator version which manages
+#                  this CR
+#                type: string
+#              pendingBackup:
+#                description: PendingBackup is the pending backup number
+#                format: int64
+#                type: integer
+#              provisionStartTime:
+#                description: ProvisionStartTime is a time when Jenkins master pod
+#                  has been created
+#                format: date-time
+#                type: string
+#              restoredBackup:
+#                description: RestoredBackup is the restored backup number after Jenkins
+#                  master pod restart
+#                format: int64
+#                type: integer
+#              userAndPasswordHash:
+#                description: UserAndPasswordHash is a SHA256 hash made from user and
+#                  password
+#                type: string
+#              userConfigurationCompletedTime:
+#                description: UserConfigurationCompletedTime is a time when Jenkins
+#                  user configuration phase has been completed
+#                format: date-time
+#                type: string
+#            type: object
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
+#    subresources:
+#      status: {}
+#status:
+#  acceptedNames:
+#    kind: ""
+#    plural: ""
+#  conditions: []
+#  storedVersions: []
 ---
 apiVersion: v1
 kind: ServiceAccount
