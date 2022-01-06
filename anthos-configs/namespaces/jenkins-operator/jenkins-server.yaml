@@ -3,9 +3,6 @@ kind: Jenkins
 metadata:
   name: prod-jenkins
 spec:
-  securityContext:
-    runAsUser: 1000
-    fsGroup: 1000
   service:
     type: LoadBalancer
     port: 8080
@@ -74,7 +71,10 @@ spec:
             memory: 500Mi
         securityContext:
         runAsUser: 1000
-        fsGroup: 1000
+        fsGroup:
+    securityContext:
+      runAsUser: 1000
+      fsGroup: 1000
   seedJobs:
   - id: hello-world-demo
     credentialType: usernamePassword
