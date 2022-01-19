@@ -19,13 +19,13 @@ pipelineJob('front-end-deploy-jenkins-operator') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/cloud-architecture-demo/demo-sf1.git')
-                        credentials('github-user-token')
+                        url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
+                        //credentials('github-user-token')
                     }
-                    branches('*/dev')
+                    branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('apps/jenkins-seed-jobs/socks-shop/front-end/deploy/pipelines/front_end_deploy_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/front-end/deploy/jobs/front_end_deploy_pipeline.jenkins')
         }
     }
 }

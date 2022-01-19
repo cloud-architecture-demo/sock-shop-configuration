@@ -12,18 +12,19 @@ podTemplate(label: label,
 ) {
 node(label) {
   stage('Payment product deploy job') {
-    withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-      container('kubectl') {
-        sh '''
-          echo "This is the payment deploy pipeline."
+    //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+    container('kubectl') {
+      sh '''
+        echo "This is the payment deploy pipeline."
 
-          ## Prepare environment
-          git clone https://${PASSWORD}@github.com/cloud-architecture-demo/demo-sf1.git -b dev
+        ## Prepare environment
+        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b gke-jcasc-demo
 
-          kubectl -n sock-shop apply -f ./demo-sf1/apps/jenkins-seed-jobs/socks-shop/payment/deploy/kubernetes
-        '''
-        }
+        ## Deploy payment app to kubernetes
+        kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/payment/deploy/kubernetes
+      '''
       }
+      //}
     }
   }
 }

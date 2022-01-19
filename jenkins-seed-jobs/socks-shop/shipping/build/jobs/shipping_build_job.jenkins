@@ -19,13 +19,13 @@ pipelineJob('shipping-build-jenkins-operator') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/cloud-architecture-demo/demo-sf1.git')
-                        credentials('github-user-token')
+                        url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
+                        //credentials('github-user-token')
                     }
-                    branches('*/dev')
+                    branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('apps/jenkins-seed-jobs/socks-shop/shipping/build/pipelines/shipping_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/shipping/build/jobs/shipping_build_pipeline.jenkins')
         }
     }
 }

@@ -24,29 +24,33 @@ podTemplate(label: label,
         ) {
     node(label) {
         stage('front-end product build job') {
-            withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                container('maven') {
-                    sleep time: 10, unit: 'SECONDS'
-                    sh '''
+            //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            container('maven') {
+                sleep time: 10, unit: 'SECONDS'
+                sh '''
 
-                        echo "This is the front-end build pipeline."
+                    echo "This is the front-end build pipeline."
 
-                        ## Prepare environment
-                        AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-                        git clone https://github.com/cloud-architecture-demo/front-end.git
-                        export PATH=$PATH:/home/jenkins/bin/
-                        mv ./front-end/* .
+                    ## Prepare environment
+                    git clone https://github.com/cloud-architecture-demo/front-end.git
+                    export PATH=$PATH:/home/jenkins/bin/
+                    mv ./front-end/* .
 
-                        docker build                                                    \
-                        -t cloud-architecture-demo/front-end:v0.1                       \
-                        -t ${AWS_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/front-end:v0.1 .
+                    ## Build front-end container image
+                    docker build                                                                \
+                    -t cloud-architecture-demo/front-end:v0.1                                   \
+                    -t us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/front-end:v0.1 .
 
-                        $(aws ecr get-login --no-include-email --region us-east-1)
-                        docker push ${AWS_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/front-end:v0.1
+                    ## Publish front-end container image to registry
+                    gcloud auth print-access-token                                          \
+                      --impersonate-service-account ${GCP_SERVICE_ACCOUNT} | docker login   \
+                      -u oauth2accesstoken                                                  \
+                      --password-stdin https://us-central1-docker.pkg.dev
+                    docker push us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/front-end:v0.1
 
-                    '''
-                }
+                '''
             }
+            //}
         }
     }
 }

@@ -19,13 +19,13 @@ pipelineJob('carts-build-jenkins-operator') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/cloud-architecture-demo/demo-sf1.git')
-                        credentials('github-user-token')
+                        url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
+                        //credentials('github-user-token')
                     }
-                    branches('*/dev')
+                    branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('apps/jenkins-seed-jobs/socks-shop/carts/build/pipelines/carts_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/carts/build/jobs/carts_build_pipeline.jenkins')
         }
     }
 }

@@ -24,40 +24,44 @@ podTemplate(label: label,
         ) {
     node(label) {
         stage('payment product build pipeline') {
-            withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                sleep time: 10, unit: 'SECONDS'
-                container('maven') {
-                    sh '''
+            //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sleep time: 10, unit: 'SECONDS'
+            container('maven') {
+                sh '''
 
-                        echo "This is the payment build pipeline."
+                    echo "This is the payment build pipeline."
 
-                        echo ""
-                        echo "GO Path: ${GOPATH}"
+                    echo ""
+                    echo "GO Path: ${GOPATH}"
 
-                        ## Prepare environment
-                        AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-                        export PATH=$PATH:/home/jenkins/bin/
-                        mkdir -p $GOPATH/src/github.com/microservices-demo/payment/
-                        git clone https://github.com/cloud-architecture-demo/payment.git
-                        mv ./payment $GOPATH/src/github.com/microservices-demo/payment/paymentsvc/
+                    ## Prepare environment
+                    export PATH=$PATH:/home/jenkins/bin/
+                    mkdir -p $GOPATH/src/github.com/microservices-demo/payment/
+                    git clone https://github.com/cloud-architecture-demo/payment.git
+                    mv ./payment $GOPATH/src/github.com/microservices-demo/payment/paymentsvc/
 
-                        cd $GOPATH/src/github.com/microservices-demo/payment/paymentsvc/
-                        go get -u github.com/FiloSottile/gvt
-                        gvt restore
+                    ## Build payment app
+                    cd $GOPATH/src/github.com/microservices-demo/payment/paymentsvc/
+                    go get -u github.com/FiloSottile/gvt
+                    gvt restore
+                    go build -o payment
 
-                        go build -o payment
+                    ## Build payment container image
+                    docker build                                                              \
+                    -t cloud-architecture-demo/payment:v0.1                                   \
+                    -t us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/payment:v0.1    \
+                    -f docker/payment/Dockerfile .
 
-                        docker build                                                  \
-                        -t cloud-architecture-demo/payment:v0.1                       \
-                        -t ${AWS_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/payment:v0.1    \
-                        -f docker/payment/Dockerfile .
+                    ## Publish payment container image to registry
+                    gcloud auth print-access-token                                          \
+                      --impersonate-service-account ${GCP_SERVICE_ACCOUNT} | docker login   \
+                      -u oauth2accesstoken                                                  \
+                      --password-stdin https://us-central1-docker.pkg.dev
+                    docker push us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/payment:v0.1
 
-                        $(aws ecr get-login --no-include-email --region us-east-1)
-                        docker push ${AWS_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/payment:v0.1
-
-                    '''
-                }
+                '''
             }
+            //}
         }
     }
 }

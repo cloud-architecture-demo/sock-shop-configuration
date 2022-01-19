@@ -12,18 +12,19 @@ podTemplate(label: label,
 ) {
 node(label) {
   stage('Session product deploy job') {
-    withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-      container('kubectl') {
-        sh '''
-          echo "This is the session session pipeline."
+    //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+    container('kubectl') {
+      sh '''
+        echo "This is the session deploy pipeline."
 
-          ## Prepare environment
-          git clone https://${PASSWORD}@github.com/cloud-architecture-demo/demo-sf1.git -b dev
+        ## Prepare environment
+        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b gke-jcasc-demo
 
-          kubectl -n sock-shop apply -f ./demo-sf1/apps/jenkins-seed-jobs/socks-shop/session/deploy/kubernetes
-        '''
-        }
+        ## Deploy session app to kubernetes
+        kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/session/deploy/kubernetes
+      '''
       }
+      //}
     }
   }
 }
