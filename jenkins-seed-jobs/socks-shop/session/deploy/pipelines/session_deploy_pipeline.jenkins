@@ -12,7 +12,6 @@ podTemplate(label: label,
 ) {
 node(label) {
   stage('Session product deploy job') {
-    //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
     container('kubectl') {
       sh '''
         echo "This is the session deploy pipeline."
@@ -24,7 +23,6 @@ node(label) {
         kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/session/deploy/kubernetes
       '''
       }
-      //}
     }
   }
 }

@@ -24,7 +24,6 @@ podTemplate(label: label,
         ) {
     node(label) {
         stage('front-end product build job') {
-            //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
             container('maven') {
                 sleep time: 10, unit: 'SECONDS'
                 sh '''
@@ -50,7 +49,6 @@ podTemplate(label: label,
 
                 '''
             }
-            //}
         }
     }
 }

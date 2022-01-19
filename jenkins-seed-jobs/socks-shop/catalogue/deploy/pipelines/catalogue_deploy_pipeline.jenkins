@@ -12,7 +12,6 @@ podTemplate(label: label,
 ) {
 node(label) {
   stage('Catalogue product deploy job') {
-    //withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
     container('kubectl') {
       sh '''
         echo "This is the catalogue deploy pipeline."
@@ -24,7 +23,6 @@ node(label) {
         kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/catalogue/deploy/kubernetes
       '''
       }
-      //}
     }
   }
 }

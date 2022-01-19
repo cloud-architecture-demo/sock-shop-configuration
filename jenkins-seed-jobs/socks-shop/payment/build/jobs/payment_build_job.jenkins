@@ -20,7 +20,6 @@ pipelineJob('payment-build-jenkins-operator') {
                 git {
                     remote {
                         url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
-                        //credentials('github-user-token')
                     }
                     branches('*/gke-jcasc-demo')
                 }

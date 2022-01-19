@@ -20,7 +20,6 @@ pipelineJob('hello-world-jenkins-operator') {
                 git {
                     remote {
                         url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
-                        //credentials('jenkins-operator')
                     }
                     branches('*/gke-jcasc-demo')
                 }
