@@ -25,7 +25,7 @@ pipelineJob('catalogue-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/catalogue/build/jobs/catalogue_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/catalogue/build/pipelines/catalogue_build_pipeline.jenkins')
         }
     }
 }

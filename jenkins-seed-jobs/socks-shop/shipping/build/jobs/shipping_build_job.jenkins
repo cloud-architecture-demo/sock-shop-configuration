@@ -25,7 +25,7 @@ pipelineJob('shipping-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/shipping/build/jobs/shipping_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/shipping/build/pipelines/shipping_build_pipeline.jenkins')
         }
     }
 }

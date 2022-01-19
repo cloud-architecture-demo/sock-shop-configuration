@@ -25,7 +25,7 @@ pipelineJob('queue-master-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/queue_master/build/jobs/queue_master_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/queue_master/build/pipelines/queue_master_build_pipeline.jenkins')
         }
     }
 }

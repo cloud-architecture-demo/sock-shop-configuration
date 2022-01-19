@@ -25,7 +25,7 @@ pipelineJob('carts-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/carts/build/jobs/carts_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/carts/build/pipelines/carts_build_pipeline.jenkins')
         }
     }
 }

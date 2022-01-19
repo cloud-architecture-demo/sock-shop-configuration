@@ -25,7 +25,7 @@ pipelineJob('front-end-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/front-end/build/jobs/front_end_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/front-end/build/pipelines/front_end_build_pipeline.jenkins')
         }
     }
 }

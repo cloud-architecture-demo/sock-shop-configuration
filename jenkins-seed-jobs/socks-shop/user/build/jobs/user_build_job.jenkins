@@ -25,7 +25,7 @@ pipelineJob('user-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/user/build/jobs/user_build_job.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/user/build/pipelines/user_build_job.jenkins')
         }
     }
 }

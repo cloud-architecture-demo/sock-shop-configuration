@@ -25,7 +25,7 @@ pipelineJob('payment-build-jenkins-operator') {
                     branches('*/gke-jcasc-demo')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/payment/build/jobs/payment_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/payment/build/pipelines/payment_build_pipeline.jenkins')
         }
     }
 }
