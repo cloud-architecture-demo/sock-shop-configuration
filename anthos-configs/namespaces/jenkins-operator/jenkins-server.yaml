@@ -29,7 +29,7 @@ spec:
     - name: kubernetes-cli
       version: "1.10.3"
     - name: workflow-job
-      version: "1167.v8fe861b_09ef9"
+      version: "2.42"
     - name: workflow-aggregator
       version: "2.6"
     - name: git
