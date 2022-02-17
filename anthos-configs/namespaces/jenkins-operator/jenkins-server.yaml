@@ -19,9 +19,9 @@ spec:
   jenkinsAPISettings:
     authorizationStrategy: createUser
   master:
-    securityContext:
-      runAsUser: 1000
-      fsGroup: 1000
+    #securityContext:
+    #  runAsUser: 1000
+    #  fsGroup: 1000
     disableCSRFProtection: false
     basePlugins:
     - name: kubernetes
