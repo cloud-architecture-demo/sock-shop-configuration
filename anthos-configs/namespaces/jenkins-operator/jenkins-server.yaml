@@ -78,11 +78,11 @@ spec:
         #  runAsUser: 1000
           #fsGroup: 1000
         #volumeMounts:
-        #- mountPath: /jenkins-home # Jenkins home volume
-        #  name: jenkins-home
-    volumes:
-    - name: jenkins-home
-      emptyDir: {}
+        #- name: jenkins-home
+        #  mountPath: /jenkins-home
+    #volumes:
+    #- name: jenkins-home
+    #  emptyDir: {}
     #securityContext:
     #runAsUser: 1000
     #fsGroup: 1000
