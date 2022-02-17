@@ -25,21 +25,21 @@ spec:
     disableCSRFProtection: false
     basePlugins:
     - name: kubernetes
-      version: "1.30.0"
+      version: "1.31.3"
     - name: kubernetes-cli
       version: "1.10.3"
     - name: workflow-job
-      version: "2.41"
+      version: "1167.v8fe861b_09ef9"
     - name: workflow-aggregator
       version: "2.6"
     - name: git
-      version: "4.2.2"
+      version: "4.10.3"
     - name: job-dsl
-      version: "1.77"
+      version: "1.78.3"
     - name: configuration-as-code
-      version: "1.51"
+      version: "1346.ve8cfa_3473c94"
     - name: kubernetes-credentials-provider
-      version: "0.18-1"
+      version: "0.20"
     containers:
       - name: jenkins-master
         image: jenkins/jenkins:2.319.3-lts-alpine
