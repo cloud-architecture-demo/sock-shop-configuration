@@ -77,9 +77,9 @@ spec:
         #securityContext:
         #  runAsUser: 1000
           #fsGroup: 1000
-        volumeMounts:
-        - mountPath: /jenkins-home # Jenkins home volume
-          name: jenkins-home
+        #volumeMounts:
+        #- mountPath: /jenkins-home # Jenkins home volume
+        #  name: jenkins-home
     volumes:
     - name: jenkins-home
       emptyDir: {}
