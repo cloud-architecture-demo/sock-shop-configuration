@@ -21,7 +21,7 @@ pipelineJob('hello-world-jenkins-operator') {
                     remote {
                         url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
                     }
-                    branches('*/gke-jcasc-demo')
+                    branches('*/demo-sf2')
                 }
             }
             scriptPath('jenkins-seed-jobs/hello-world/pipelines/hello_world.jenkins')

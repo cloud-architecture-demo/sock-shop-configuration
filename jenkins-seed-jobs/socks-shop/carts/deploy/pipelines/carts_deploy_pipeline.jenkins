@@ -17,7 +17,7 @@ node(label) {
         echo "This is the carts deploy pipeline."
 
         ## Prepare environment
-        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b gke-jcasc-demo
+        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b demo-sf2
 
         ## Deploy carts app to kubernetes
         kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/carts/deploy/kubernetes

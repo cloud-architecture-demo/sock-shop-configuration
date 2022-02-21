@@ -21,7 +21,7 @@ pipelineJob('orders-deploy-jenkins-operator') {
                     remote {
                         url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
                     }
-                    branches('*/gke-jcasc-demo')
+                    branches('*/demo-sf2')
                 }
             }
             scriptPath('jenkins-seed-jobs/socks-shop/orders/deploy/jobs/orders_deploy_pipeline.jenkins')
