@@ -1,15 +1,20 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-payment-build"
+def app_name = "payment"
+def label = "k8sagent-${app_name}-build"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/payment-build"
-def workdir = "${workspace}/payment-build/"
+def workspace = "${home}/workspace/${app_name}-build"
+def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
         containerTemplate(name: 'maven', image: 'cloudarchitecturedemo/agent:0.1', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
+                envVar(key: 'APP_NAME', value: 'payment'),
+                envVar(key: 'GCP_PROJECT_ID', value: 'gke-jcasc-demo-c175b9a7'),
+                envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-gke-jcasc-demo-0bad@gke-jcasc-demo-c175b9a7.iam.gserviceaccount.com'),
+                envVar(key: 'GCP_REGION', value: 'us-central1'),
             ],
         ),
         containerTemplate(name: 'docker', image: 'docker:20.10.6-dind', privileged: true, ttyEnabled: true,
@@ -23,40 +28,39 @@ podTemplate(label: label,
         ],
         ) {
     node(label) {
-        stage('payment product build pipeline') {
+        stage('${app_name} product build pipeline') {
             sleep time: 10, unit: 'SECONDS'
             container('maven') {
                 sh '''
 
-                    echo "This is the payment build pipeline."
+                    echo "This is the ${APP_NAME} build pipeline."
 
                     echo ""
                     echo "GO Path: ${GOPATH}"
 
                     ## Prepare environment
                     export PATH=$PATH:/home/jenkins/bin/
-                    mkdir -p $GOPATH/src/github.com/microservices-demo/payment/
-                    git clone https://github.com/cloud-architecture-demo/payment.git
-                    mv ./payment $GOPATH/src/github.com/microservices-demo/payment/paymentsvc/
+                    mkdir -p $GOPATH/src/github.com/microservices-demo/${APP_NAME}/
+                    git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git
+                    mv ./${APP_NAME} $GOPATH/src/github.com/microservices-demo/${APP_NAME}/${APP_NAME}svc/
 
-                    ## Build payment app
-                    cd $GOPATH/src/github.com/microservices-demo/payment/paymentsvc/
+                    ## Build app
+                    cd $GOPATH/src/github.com/microservices-demo/${APP_NAME}/${APP_NAME}svc/
                     go get -u github.com/FiloSottile/gvt
                     gvt restore
-                    go build -o payment
+                    go build -o ${APP_NAME}
 
-                    ## Build payment container image
-                    docker build                                                              \
-                    -t cloud-architecture-demo/payment:v0.1                                   \
-                    -t us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/payment:v0.1    \
-                    -f docker/payment/Dockerfile .
+                    ## Build container image
+                    docker build                                                                        \
+                    -t cloud-architecture-demo/${APP_NAME}:v0.1                                         \
+                    -t ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1  \
+                    -f docker/${APP_NAME}/Dockerfile .
 
-                    ## Publish payment container image to registry
-                    gcloud auth print-access-token                                          \
-                      --impersonate-service-account ${GCP_SERVICE_ACCOUNT} | docker login   \
-                      -u oauth2accesstoken                                                  \
-                      --password-stdin https://us-central1-docker.pkg.dev
-                    docker push us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/payment:v0.1
+                    ## Publish container image to registry
+                    gcloud auth configure-docker --quiet
+                    gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+                    docker push ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1
 
                 '''
             }

@@ -1,15 +1,20 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-front-end-build"
+def app_name = "front-end"
+def label = "k8sagent-${app_name}-build"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/front-end-build"
-def workdir = "${workspace}/front-end-build/"
+def workspace = "${home}/workspace/${app_name}-build"
+def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
         containerTemplate(name: 'maven', image: 'cloudarchitecturedemo/agent:0.1', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
+                envVar(key: 'APP_NAME', value: 'front-end'),
+                envVar(key: 'GCP_PROJECT_ID', value: 'gke-jcasc-demo-c175b9a7'),
+                envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-gke-jcasc-demo-0bad@gke-jcasc-demo-c175b9a7.iam.gserviceaccount.com'),
+                envVar(key: 'GCP_REGION', value: 'us-central1'),
             ],
         ),
         containerTemplate(name: 'docker', image: 'docker:20.10.6-dind', privileged: true, ttyEnabled: true,
@@ -23,29 +28,31 @@ podTemplate(label: label,
         ],
         ) {
     node(label) {
-        stage('front-end product build job') {
+        stage('${app_name} product build job') {
             container('maven') {
                 sleep time: 10, unit: 'SECONDS'
                 sh '''
 
-                    echo "This is the front-end build pipeline."
+                    echo "This is the ${APP_NAME} build pipeline."
 
                     ## Prepare environment
-                    git clone https://github.com/cloud-architecture-demo/front-end.git
+                    curl -Lo- https://sdk.cloud.google.com | bash -s -- --disable-prompts
+                    export PATH=$PATH:/home/jenkins/google-cloud-sdk/bin/
+
+                    git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git
                     export PATH=$PATH:/home/jenkins/bin/
-                    mv ./front-end/* .
+                    mv ./${APP_NAME}/* .
 
-                    ## Build front-end container image
-                    docker build                                                                \
-                    -t cloud-architecture-demo/front-end:v0.1                                   \
-                    -t us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/front-end:v0.1 .
+                    ## Build container image
+                    docker build                                                                        \
+                    -t cloud-architecture-demo/${APP_NAME}:v0.1                                         \
+                    -t ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1 .
 
-                    ## Publish front-end container image to registry
-                    gcloud auth print-access-token                                          \
-                      --impersonate-service-account ${GCP_SERVICE_ACCOUNT} | docker login   \
-                      -u oauth2accesstoken                                                  \
-                      --password-stdin https://us-central1-docker.pkg.dev
-                    docker push us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/front-end:v0.1
+                    ## Publish container image to registry
+                    gcloud auth configure-docker --quiet
+                    gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+                    docker push ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1
 
                 '''
             }

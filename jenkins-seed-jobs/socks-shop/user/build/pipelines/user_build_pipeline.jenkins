@@ -1,15 +1,20 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-user-build"
+def app_name = "user"
+def label = "k8sagent-${app_name}-build"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/user-build"
-def workdir = "${workspace}/user-build/"
+def workspace = "${home}/workspace/${app_name}-build"
+def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
         containerTemplate(name: 'maven', image: 'cloudarchitecturedemo/agent:0.1', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
+                envVar(key: 'APP_NAME', value: 'user'),
+                envVar(key: 'GCP_PROJECT_ID', value: 'gke-jcasc-demo-c175b9a7'),
+                envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-gke-jcasc-demo-0bad@gke-jcasc-demo-c175b9a7.iam.gserviceaccount.com'),
+                envVar(key: 'GCP_REGION', value: 'us-central1'),
             ],
         ),
         containerTemplate(name: 'docker', image: 'docker:20.10.6-dind', privileged: true, ttyEnabled: true,
@@ -23,36 +28,38 @@ podTemplate(label: label,
         ],
         ) {
     node(label) {
-        stage('user product build pipeline') {
+        stage('${app_name} product build pipeline') {
             container('maven') {
                 sleep time: 10, unit: 'SECONDS'
                 sh '''
 
-                    echo "This is the user build pipeline."
+                    echo "This is the ${APP_NAME} build pipeline."
 
                     echo ""
                     echo "GO Path: ${GOPATH}"
 
                     ## Prepare environment
+                    curl -Lo- https://sdk.cloud.google.com | bash -s -- --disable-prompts
+                    export PATH=$PATH:/home/jenkins/google-cloud-sdk/bin/
+
                     export PATH=$PATH:/home/jenkins/bin/
                     mkdir -p $GOPATH/go/src/github.com/microservices-demo/
-                    git clone https://github.com/cloud-architecture-demo/user.git
-                    mv ./user $GOPATH/go/src/github.com/microservices-demo/
+                    git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git
+                    mv ./${APP_NAME} $GOPATH/go/src/github.com/microservices-demo/
 
-                    cd $GOPATH/go/src/github.com/microservices-demo/user/
+                    cd $GOPATH/go/src/github.com/microservices-demo/${APP_NAME}/
 
-                    ## Build user container image
-                    docker build                                                            \
-                    -t cloud-architecture-demo/user:v0.1                                    \
-                    -t us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/user:v0.1     \
-                    -f docker/user/Dockerfile-release .
+                    ## Build container image
+                    docker build                                                                        \
+                    -t cloud-architecture-demo/${APP_NAME}:v0.1                                         \
+                    -t ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1  \
+                    -f docker/${APP_NAME}/Dockerfile-release .
 
-                    ## Publish user container image to registry
-                    gcloud auth print-access-token                                          \
-                      --impersonate-service-account ${GCP_SERVICE_ACCOUNT} | docker login   \
-                      -u oauth2accesstoken                                                  \
-                      --password-stdin https://us-central1-docker.pkg.dev
-                    docker push us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/user:v0.1
+                    ## Publish container image to registry
+                    gcloud auth configure-docker --quiet
+                    gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+                    docker push ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1
 
                 '''
             }

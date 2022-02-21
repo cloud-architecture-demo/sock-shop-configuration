@@ -1,15 +1,20 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-orders-build"
+def app_name = "orders"
+def label = "k8sagent-${app_name}-build"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/orders-build"
-def workdir = "${workspace}/orders-build/"
+def workspace = "${home}/workspace/${app_name}-build"
+def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
         containerTemplate(name: 'maven', image: 'cloudarchitecturedemo/agent:0.1', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
+                envVar(key: 'APP_NAME', value: 'orders'),
+                envVar(key: 'GCP_PROJECT_ID', value: 'gke-jcasc-demo-c175b9a7'),
+                envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-gke-jcasc-demo-0bad@gke-jcasc-demo-c175b9a7.iam.gserviceaccount.com'),
+                envVar(key: 'GCP_REGION', value: 'us-central1'),
             ],
         ),
         containerTemplate(name: 'docker', image: 'docker:20.10.6-dind', privileged: true, ttyEnabled: true,
@@ -23,34 +28,36 @@ podTemplate(label: label,
         ],
         ) {
     node(label) {
-        stage('orders product build job') {
+        stage('${app_name} product build job') {
             container('maven') {
                 sleep time: 10, unit: 'SECONDS'
                 sh '''
 
-                    echo "This is the orders build pipeline."
+                    echo "This is the ${APP_NAME} build pipeline."
 
                     ## Prepare environment
-                    git clone https://github.com/cloud-architecture-demo/orders.git
-                    export PATH=$PATH:/home/jenkins/bin/
-                    mv ./orders/* .
+                    curl -Lo- https://sdk.cloud.google.com | bash -s -- --disable-prompts
+                    export PATH=$PATH:/home/jenkins/google-cloud-sdk/bin/
 
-                    ## Build orders app
+                    git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git
+                    export PATH=$PATH:/home/jenkins/bin/
+                    mv ./${APP_NAME}/* .
+
+                    ## Build app
                     mvn -DskipTests package
                     mv target/*.jar .
 
-                    ## Build orders container image
-                    docker build                                                            \
-                    -t cloud-architecture-demo/orders:v0.1                                  \
-                    -t us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/orders:v0.1   \
-                    -f docker/orders/Dockerfile .
+                    ## Build container image
+                    docker build                                                                        \
+                    -t cloud-architecture-demo/${APP_NAME}:v0.1                                         \
+                    -t ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1  \
+                    -f docker/${APP_NAME}/Dockerfile .
 
-                    ## Publish orders container image to registry
-                    gcloud auth print-access-token                                          \
-                      --impersonate-service-account ${GCP_SERVICE_ACCOUNT} | docker login   \
-                      -u oauth2accesstoken                                                  \
-                      --password-stdin https://us-central1-docker.pkg.dev
-                    docker push us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop/orders:v0.1
+                    ## Publish container image to registry
+                    gcloud auth configure-docker --quiet
+                    gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+                    docker push ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/sock-shop-build/${APP_NAME}:v0.1
 
                 '''
             }
