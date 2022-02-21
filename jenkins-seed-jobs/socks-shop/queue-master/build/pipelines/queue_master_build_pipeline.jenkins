@@ -12,7 +12,7 @@ podTemplate(label: label,
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
                 envVar(key: 'APP_NAME', value: 'queue-master'),
-                envVar(key: 'GCP_PROJECT_ID', value: 'demo-sf2'),
+                envVar(key: 'GCP_PROJECT_ID', value: 'demosf2'),
                 envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-demo-sf2@demo-sf2.iam.gserviceaccount.com'),
                 envVar(key: 'GCP_REGION', value: 'us-central1'),
             ],
