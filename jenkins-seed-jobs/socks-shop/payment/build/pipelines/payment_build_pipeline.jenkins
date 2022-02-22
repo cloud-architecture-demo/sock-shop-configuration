@@ -39,6 +39,10 @@ podTemplate(label: label,
                     echo "GO Path: ${GOPATH}"
 
                     ## Prepare environment
+                    curl -Lo- https://sdk.cloud.google.com | bash -s -- --disable-prompts
+                    export GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)' 2>/dev/null)
+                    export PATH=$PATH:/home/jenkins/google-cloud-sdk/bin/
+
                     export PATH=$PATH:/home/jenkins/bin/
                     mkdir -p $GOPATH/src/github.com/microservices-demo/${APP_NAME}/
                     git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git

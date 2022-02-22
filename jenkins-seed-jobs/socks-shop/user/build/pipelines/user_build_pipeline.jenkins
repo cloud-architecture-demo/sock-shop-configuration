@@ -12,7 +12,7 @@ podTemplate(label: label,
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
                 envVar(key: 'APP_NAME', value: 'user'),
-                envVar(key: 'GCP_PROJECT_ID', value: 'demosf2'),
+                //envVar(key: 'GCP_PROJECT_ID', value: 'demosf2'),
                 envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-demo-sf2@demo-sf2.iam.gserviceaccount.com'),
                 envVar(key: 'GCP_REGION', value: 'us-central1'),
             ],
@@ -40,6 +40,7 @@ podTemplate(label: label,
 
                     ## Prepare environment
                     curl -Lo- https://sdk.cloud.google.com | bash -s -- --disable-prompts
+                    export GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)' 2>/dev/null)
                     export PATH=$PATH:/home/jenkins/google-cloud-sdk/bin/
 
                     export PATH=$PATH:/home/jenkins/bin/
@@ -48,6 +49,11 @@ podTemplate(label: label,
                     mv ./${APP_NAME} $GOPATH/go/src/github.com/microservices-demo/
 
                     cd $GOPATH/go/src/github.com/microservices-demo/${APP_NAME}/
+
+                    GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)' 2>/dev/null)
+                    echo GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+
+                    gcloud config list --format 'value(core.project)' 2>/dev/null
 
                     ## Build container image
                     docker build                                                                        \
