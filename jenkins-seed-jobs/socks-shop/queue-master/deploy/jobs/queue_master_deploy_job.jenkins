@@ -1,11 +1,11 @@
 #!/usr/bin/env groovy
 
-def app-name = "queue-master"
+def appname = "queue-master"
 def app_name = "queue_master"
 def branch = "demo-sf2"
 
-pipelineJob("${app-name}-deploy-jenkins-operator") {
-    displayName("${app-name}-deploy")
+pipelineJob("${appname}-deploy-jenkins-operator") {
+    displayName("${appname}-deploy")
 
     logRotator {
         numToKeep(30)
