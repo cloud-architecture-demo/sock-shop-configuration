@@ -30,3 +30,4 @@ pipelineJob("${app_name}-build-jenkins-operator") {
             scriptPath("jenkins-seed-jobs/socks-shop/${app_name}/build/pipelines/${app_name}_build_pipeline.jenkins")
         }
     }
+}

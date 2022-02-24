@@ -1,11 +1,12 @@
 #!/usr/bin/env groovy
 
-def app_name = "front-end"
+def app-name = "front-end"
+def app_name = "front_end"
 def branch = "demo-sf2"
-def label = "k8sagent-${app_name}-deploy"
+def label = "k8sagent-${app-name}-deploy"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/${app_name}-deploy"
-def workdir = "${workspace}/${app_name}-deploy/"
+def workspace = "${home}/workspace/${app-name}-deploy"
+def workdir = "${workspace}/${app-name}-deploy/"
 
 podTemplate(label: label,
   containers: [
@@ -16,7 +17,7 @@ node(label) {
   stage("${app_name} product deploy job") {
     container('kubectl') {
       sh '''
-        echo "This is the ${app_name} deploy pipeline."
+        echo "This is the ${app-name} deploy pipeline."
 
         ## Prepare environment
         git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b ${branch}

@@ -1,10 +1,11 @@
 #!/usr/bin/env groovy
 
-def app_name = "front-end"
+def app-name = "front-end"
+def app_name = "front_end"
 def branch = "demo-sf2"
 
-pipelineJob("${app_name}-build-jenkins-operator") {
-    displayName("${app_name}-build")
+pipelineJob("${app-name}-build-jenkins-operator") {
+    displayName("${app-name}-build")
 
     logRotator {
         numToKeep(30)
