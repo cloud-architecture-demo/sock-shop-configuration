@@ -28,7 +28,7 @@ pipelineJob("${appname}-build-jenkins-operator") {
                     branches("*/${branch}")
                 }
             }
-            scriptPath("jenkins-seed-jobs/socks-shop/${app_name}/build/pipelines/${app_name}_build_pipeline.jenkins")
+            scriptPath("jenkins-seed-jobs/socks-shop/${appname}/build/pipelines/${app_name}_build_pipeline.jenkins")
         }
     }
 }
