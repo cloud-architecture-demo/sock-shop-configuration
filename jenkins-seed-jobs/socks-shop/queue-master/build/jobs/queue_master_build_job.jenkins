@@ -24,7 +24,7 @@ pipelineJob('queue-master-build-jenkins-operator') {
                     branches('*/demo-sf2')
                 }
             }
-            scriptPath('jenkins-seed-jobs/socks-shop/queue_master/build/pipelines/queue_master_build_pipeline.jenkins')
+            scriptPath('jenkins-seed-jobs/socks-shop/queue-master/build/pipelines/queue_master_build_pipeline.jenkins')
         }
     }
 }

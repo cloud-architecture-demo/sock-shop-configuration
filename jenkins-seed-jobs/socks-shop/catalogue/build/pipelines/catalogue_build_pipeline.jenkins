@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 
 def app_name = "catalogue"
+def gcp_region = "us-central1"
 def label = "k8sagent-${app_name}-build"
 def home = "/home/jenkins"
 def workspace = "${home}/workspace/${app_name}-build"
@@ -8,13 +9,11 @@ def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
-        containerTemplate(name: 'maven', image: 'cloudarchitecturedemo/agent:0.1', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
+        containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.2', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
             envVars: [
-                envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
-                envVar(key: 'APP_NAME', value: 'catalogue'),
-                envVar(key: 'GCP_PROJECT_ID', value: 'demosf2'),
-                envVar(key: 'GCP_SERVICE_ACCOUNT', value: 'tf-gke-demo-sf2@demo-sf2.iam.gserviceaccount.com'),
-                envVar(key: 'GCP_REGION', value: 'us-central1'),
+                envVar(key: 'DOCKER_HOST', value: "tcp://localhost:2375"),
+                envVar(key: 'APP_NAME', value: "${app_name}"),
+                envVar(key: 'GCP_REGION', value: "${gcp_region}"),
             ],
         ),
         containerTemplate(name: 'docker', image: 'docker:20.10.6-dind', privileged: true, ttyEnabled: true,
@@ -29,7 +28,7 @@ podTemplate(label: label,
         ) {
     node(label) {
         stage('${app_name} product build pipeline') {
-            container('maven') {
+            container('agent') {
                 sleep time: 10, unit: 'SECONDS'
                 sh '''
 
@@ -39,20 +38,13 @@ podTemplate(label: label,
                     echo "GO Path: ${GOPATH}"
 
                     ## Prepare environment
-                    curl -Lo- https://sdk.cloud.google.com | bash -s -- --disable-prompts
                     export GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)' 2>/dev/null)
-                    export PATH=$PATH:/home/jenkins/google-cloud-sdk/bin/
-
-                    export PATH=$PATH:/home/jenkins/bin/
-                    mkdir -p $GOPATH/src/github.com/microservices-demo/${APP_NAME}/
                     git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git
+                    mkdir -p $GOPATH/src/github.com/microservices-demo/${APP_NAME}/
                     mv ./${APP_NAME} $GOPATH/src/github.com/microservices-demo/${APP_NAME}/${APP_NAME}svc/
 
                     ## Build app
                     cd $GOPATH/src/github.com/microservices-demo/${APP_NAME}/${APP_NAME}svc/
-                    go get -u github.com/FiloSottile/gvt
-                    gvt restore
-                    go build -o ${APP_NAME}
 
                     ## Build container image
                     docker build                                                                        \
@@ -68,7 +60,6 @@ podTemplate(label: label,
 
                 '''
             }
-            //}
         }
     }
 }
