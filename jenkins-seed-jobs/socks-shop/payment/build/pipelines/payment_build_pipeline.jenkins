@@ -27,7 +27,7 @@ podTemplate(label: label,
         ],
         ) {
     node(label) {
-        stage('${app_name} product build pipeline') {
+        stage("${app_name} product build pipeline") {
             sleep time: 15, unit: 'SECONDS'
             container('agent') {
                 sh '''

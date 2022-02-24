@@ -1,26 +1,28 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-front-end-deploy"
+def app_name = "front-end"
+def branch = "demo-sf2"
+def label = "k8sagent-${app_name}-deploy"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/front-end-deploy"
-def workdir = "${workspace}/front-end-deploy/"
+def workspace = "${home}/workspace/${app_name}-deploy"
+def workdir = "${workspace}/${app_name}-deploy/"
 
 podTemplate(label: label,
   containers: [
-    containerTemplate(name: 'kubectl', image: 'cloudarchitecturedemo/agent:0.1', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'kubectl', image: 'cloudarchitecturedemo/agent:0.2', ttyEnabled: true, command: 'cat'),
   ],
 ) {
 node(label) {
-  stage('Front-End product deploy job') {
+  stage("${app_name} product deploy job") {
     container('kubectl') {
       sh '''
-        echo "This is the front-end deploy pipeline."
+        echo "This is the ${app_name} deploy pipeline."
 
         ## Prepare environment
-        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b demo-sf2
+        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b ${branch}
 
-        ## Deploy front-end app to kubernetes
-        kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/front-end/deploy/kubernetes
+        ## Deploy app to kubernetes
+        kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/${app_name}/deploy/kubernetes
       '''
       }
     }
