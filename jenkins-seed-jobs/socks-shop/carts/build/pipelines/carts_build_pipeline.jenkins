@@ -7,10 +7,9 @@ def home = "/home/jenkins"
 def workspace = "${home}/workspace/${app_name}-build"
 def workdir = "${workspace}/${app_name}-build/"
 
-
 podTemplate(label: label,
     containers: [
-        containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.2', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
+        containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.2', alwaysPullImage: true, ttyEnabled: true,
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: "tcp://localhost:2375"),
                 envVar(key: 'APP_NAME', value: "${app_name}"),
@@ -22,7 +21,9 @@ podTemplate(label: label,
                 envVar(key: 'DOCKER_TLS_CERTDIR', value: ''),
             ],
         ),
-        ],
+        containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-agent-jdk11:latest',
+        ),
+    ],
         volumes: [
             emptyDirVolume(mountPath: '/var/lib/docker', memory: false),
         ],
