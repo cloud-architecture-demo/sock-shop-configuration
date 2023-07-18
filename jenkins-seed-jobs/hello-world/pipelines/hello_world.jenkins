@@ -7,12 +7,15 @@ def workdir = "${workspace}/hello-world/"
 
 podTemplate(label: label,
         containers: [
-                containerTemplate(name: 'alpine', image: 'alpine:3.11', ttyEnabled: true, command: 'cat'),
-        ],
+            containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.3', alwaysPullImage: true, ttyEnabled: true,
+        ),
+            containerTemplate(name: 'jnlp', image: 'mirantis/jnlp-slave',
+        ),
+    ],
         ) {
     node(label) {
         stage('Run shell') {
-            container('alpine') {
+            container('agent') {
                 sh 'echo "hello world"'
             }
         }

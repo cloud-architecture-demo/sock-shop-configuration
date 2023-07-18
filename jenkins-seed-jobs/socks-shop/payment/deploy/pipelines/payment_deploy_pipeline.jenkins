@@ -9,7 +9,10 @@ def workdir = "${workspace}/${app_name}-deploy/"
 
 podTemplate(label: label,
   containers: [
-    containerTemplate(name: 'kubectl', image: 'cloudarchitecturedemo/agent:0.2', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'kubectl', image: 'cloudarchitecturedemo/agent:0.3', ttyEnabled: true
+    ),
+    containerTemplate(name: 'jnlp', image: 'mirantis/jnlp-slave',
+    ),
   ],
 ) {
 node(label) {

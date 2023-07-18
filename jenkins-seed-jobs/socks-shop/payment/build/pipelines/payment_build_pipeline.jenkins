@@ -9,7 +9,7 @@ def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
-        containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.2', alwaysPullImage: true, ttyEnabled: true,
+        containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.3', alwaysPullImage: true, ttyEnabled: true,
             envVars: [
                 envVar(key: 'DOCKER_HOST', value: "tcp://localhost:2375"),
                 envVar(key: 'APP_NAME', value: "${app_name}"),
@@ -21,7 +21,7 @@ podTemplate(label: label,
                 envVar(key: 'DOCKER_TLS_CERTDIR', value: ''),
             ],
         ),
-        containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-agent-jdk11:latest',
+        containerTemplate(name: 'jnlp', image: 'mirantis/jnlp-slave',
         ),
     ],
         volumes: [
