@@ -1,6 +1,3 @@
-# Anthos Configuration Management Directory
+# ArgoCD Configuration Directory
 
-This is the root directory for Anthos Configuration Management.
-
-See [the Hierarchical Repo documentation](https://cloud.google.com/anthos-config-management/docs/concepts/hierarchical-repo) for how to use each subdirectory.
-
+This is the root directory for the Sock Shop ArgoCD Configurations.
