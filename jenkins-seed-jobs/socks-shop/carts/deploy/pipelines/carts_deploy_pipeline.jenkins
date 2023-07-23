@@ -1,28 +1,32 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-carts-deploy"
+def app_name = "carts"
+def branch = "demo-sf3"
+def label = "k8sagent-${app_name}-deploy"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/carts-deploy"
-def workdir = "${workspace}/carts-deploy/"
+def workspace = "${home}/workspace/${app_name}-deploy"
+def workdir = "${workspace}/${app_name}-deploy/"
 
 podTemplate(label: label,
   containers: [
-    containerTemplate(name: 'kubectl', image: 'cloudarchitecturedemo/agent:0.1', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'kubectl', image: 'cloudarchitecturedemo/agent:0.3', ttyEnabled: true
+    ),
+    containerTemplate(name: 'jnlp', image: 'mirantis/jnlp-slave',
+    ),
   ],
 ) {
 node(label) {
-  stage('Carts product deploy job') {
-    withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-      container('kubectl') {
-        sh '''
-          echo "This is the carts deploy pipeline."
+  stage("${app_name} product deploy job") {
+    container('kubectl') {
+      sh '''
+        echo "This is the ${app_name} deploy pipeline."
 
-          ## Prepare environment
-          git clone https://${PASSWORD}@github.com/cloud-architecture-demo/demo-sf1.git -b dev
+        ## Prepare environment
+        git clone https://github.com/cloud-architecture-demo/sock-shop-configuration.git -b ${branch}
 
-          kubectl -n sock-shop apply -f ./demo-sf1/apps/jenkins-seed-jobs/socks-shop/carts/deploy/kubernetes
-        '''
-        }
+        ## Deploy app to kubernetes
+        kubectl -n sock-shop apply -f ./jenkins-seed-jobs/socks-shop/${app_name}/deploy/kubernetes
+      '''
       }
     }
   }

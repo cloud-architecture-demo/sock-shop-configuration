@@ -1,7 +1,10 @@
 #!/usr/bin/env groovy
 
-pipelineJob('shipping-deploy-jenkins-operator') {
-    displayName('shipping-deploy')
+def app_name = "shipping"
+def branch = "demo-sf3"
+
+pipelineJob("${app_name}-deploy-jenkins-operator") {
+    displayName("${app_name}-deploy")
 
     logRotator {
         numToKeep(30)
@@ -19,13 +22,12 @@ pipelineJob('shipping-deploy-jenkins-operator') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/cloud-architecture-demo/demo-sf1.git')
-                        credentials('github-user-token')
+                        url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
                     }
-                    branches('*/dev')
+                    branches("*/${branch}")
                 }
             }
-            scriptPath('apps/jenkins-seed-jobs/socks-shop/shipping/deploy/pipelines/shipping_deploy_pipeline.jenkins')
+            scriptPath("jenkins-seed-jobs/socks-shop/${app_name}/deploy/jobs/${app_name}_deploy_pipeline.jenkins")
         }
     }
 }

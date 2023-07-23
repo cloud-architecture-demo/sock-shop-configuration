@@ -1,15 +1,19 @@
 #!/usr/bin/env groovy
 
-def label = "k8sagent-user-build"
+def app_name = "user"
+def aws_region = "us-east-1"
+def label = "k8sagent-${app_name}-build"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/user-build"
-def workdir = "${workspace}/user-build/"
+def workspace = "${home}/workspace/${app_name}-build"
+def workdir = "${workspace}/${app_name}-build/"
 
 podTemplate(label: label,
     containers: [
-        containerTemplate(name: 'maven', image: 'cloudarchitecturedemo/agent:0.1', alwaysPullImage: true, ttyEnabled: true, command: 'cat',
+        containerTemplate(name: 'agent', image: 'cloudarchitecturedemo/agent:0.3', alwaysPullImage: true, ttyEnabled: true,
             envVars: [
-                envVar(key: 'DOCKER_HOST', value: 'tcp://localhost:2375'),
+                envVar(key: 'DOCKER_HOST', value: "tcp://localhost:2375"),
+                envVar(key: 'APP_NAME', value: "${app_name}"),
+                envVar(key: 'AWS_REGION', value: "${aws_region}"),
             ],
         ),
         containerTemplate(name: 'docker', image: 'docker:20.10.6-dind', privileged: true, ttyEnabled: true,
@@ -17,43 +21,45 @@ podTemplate(label: label,
                 envVar(key: 'DOCKER_TLS_CERTDIR', value: ''),
             ],
         ),
-        ],
+        containerTemplate(name: 'jnlp', image: 'mirantis/jnlp-slave',
+        ),
+    ],
         volumes: [
             emptyDirVolume(mountPath: '/var/lib/docker', memory: false),
         ],
         ) {
     node(label) {
-        stage('user product build pipeline') {
-            withCredentials([usernamePassword(credentialsId: 'github-user-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                container('maven') {
-                    sleep time: 10, unit: 'SECONDS'
-                    sh '''
+        stage("${app_name} product build pipeline") {
+            container('agent') {
+                sleep time: 15, unit: 'SECONDS'
+                sh '''
 
-                        echo "This is the user build pipeline."
+                    echo "This is the ${APP_NAME} build pipeline."
 
-                        echo ""
-                        echo "GO Path: ${GOPATH}"
+                    echo ""
+                    echo "GO Path: ${GOPATH}"
 
-                        ## Prepare environment
-                        AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-                        export PATH=$PATH:/home/jenkins/bin/
-                        mkdir -p $GOPATH/go/src/github.com/microservices-demo/
-                        git clone https://github.com/cloud-architecture-demo/user.git
-                        mv ./user $GOPATH/go/src/github.com/microservices-demo/
+                    ## Prepare environment
+                    AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+                    git clone https://github.com/cloud-architecture-demo/${APP_NAME}.git
+                    mkdir -p $GOPATH/go/src/github.com/microservices-demo/
+                    mv ./${APP_NAME} $GOPATH/go/src/github.com/microservices-demo/
 
-                        cd $GOPATH/go/src/github.com/microservices-demo/user/
+                    cd $GOPATH/go/src/github.com/microservices-demo/${APP_NAME}/
 
-                        docker build                                                \
-                        -t cloud-architecture-demo/user:v0.1                        \
-                        -t ${AWS_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/user:v0.1     \
-                        -f docker/user/Dockerfile-release .
-                        
-                        $(aws ecr get-login --no-include-email --region us-east-1)
-                        docker push ${AWS_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/user:v0.1
+                    ## Build container image
+                    docker build                                                                \
+                    -t cloud-architecture-demo/${APP_NAME}:v0.1                                 \
+                    -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/${APP_NAME}:v0.1      \
+                    -f docker/${APP_NAME}/Dockerfile-release .
 
-                    '''
-                }
+                    ## Publish container image to registry
+                    $(aws ecr get-login --no-include-email --region ${AWS_REGION})
+                    docker push ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/${APP_NAME}:v0.1
+
+                '''
             }
+
         }
     }
 }
