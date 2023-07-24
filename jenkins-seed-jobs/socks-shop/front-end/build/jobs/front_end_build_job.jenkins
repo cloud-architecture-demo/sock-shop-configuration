@@ -1,11 +1,11 @@
 #!/usr/bin/env groovy
 
-def app-name = "front-end"
+def appname = "front-end"
 def app_name = "front_end"
 def branch = "demo-sf3"
 
-pipelineJob("${app_name}-build-jenkins-operator") {
-    displayName("${app_name}-build")
+pipelineJob("${appname}-build-jenkins-operator") {
+    displayName("${appname}-build")
 
     logRotator {
         numToKeep(30)
@@ -28,7 +28,7 @@ pipelineJob("${app_name}-build-jenkins-operator") {
                     branches("*/${branch}")
                 }
             }
-            scriptPath("jenkins-seed-jobs/socks-shop/${app-name}/build/pipelines/${app_name}_build_pipeline.jenkins")
+            scriptPath("jenkins-seed-jobs/socks-shop/${appname}/build/pipelines/${app_name}_build_pipeline.jenkins")
         }
     }
 }
