@@ -15,7 +15,7 @@ podTemplate(label: label,
         ) {
     node(label) {
         stage('Run shell') {
-            container('alpine') {
+            container('agent') {
                 sh 'echo "hello world"'
             }
         }
