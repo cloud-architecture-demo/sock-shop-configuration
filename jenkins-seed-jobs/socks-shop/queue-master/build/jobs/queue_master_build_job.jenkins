@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 
+def app-name = "queue-master"
 def app_name = "queue_master"
 def branch = "demo-sf3"
 
@@ -27,7 +28,7 @@ pipelineJob("${app_name}-build-jenkins-operator") {
                     branches("*/${branch}")
                 }
             }
-            scriptPath("jenkins-seed-jobs/socks-shop/${app_name}/build/pipelines/${app_name}_build_pipeline.jenkins")
+            scriptPath("jenkins-seed-jobs/socks-shop/${app-name}/build/pipelines/${app_name}_build_pipeline.jenkins")
         }
     }
 }
