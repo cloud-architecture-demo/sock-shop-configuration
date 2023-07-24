@@ -19,13 +19,13 @@ pipelineJob('hello-world-jenkins-operator') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/Joeltrane/architecture-demo.git')
+                        url('https://github.com/cloud-architecture-demo/sock-shop-configuration.git')
                         credentials('jenkins-operator')
                     }
-                    branches('*/dev')
+                    branches('*/demo-sf3')
                 }
             }
-            scriptPath('apps/jenkins-seed-jobs/hello-world/pipelines/hello_world.jenkins')
+            scriptPath('jenkins-seed-jobs/hello-world/pipelines/hello_world.jenkins')
         }
     }
 }
