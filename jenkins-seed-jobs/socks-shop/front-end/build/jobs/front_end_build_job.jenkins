@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def app_name = "front_end"
+def app_name = "front-end"
 def branch = "demo-sf3"
 
 pipelineJob("${app_name}-build-jenkins-operator") {
